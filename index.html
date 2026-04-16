@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نشاط المحاضرة الثانية - CIPT</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .logos { display: flex; justify-content: space-around; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+        .logos img { max-height: 80px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #333; }
+        input[type="text"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        button { background-color: #1a2b4c; color: white; border: none; padding: 12px 20px; cursor: pointer; border-radius: 5px; font-size: 16px; width: 100%; }
+        button:hover { background-color: #0d172a; }
+        .success-msg { display: none; color: green; text-align: center; font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logos">
+        <img src="cipt-logo.png" alt="CIPT Logo">
+        <img src="ese-logo.png" alt="ESE Logo">
+        <img src="nu-logo.png" alt="Nile University Logo">
+        <img src="asit-logo.png" alt="ASIT Logo">
+    </div>
+
+    <h2 style="text-align: center; color: #1a2b4c;">نشاط تفاعلي: كبسولة المحاضرة الثانية</h2>
+    
+    <form id="quizForm">
+        <div class="form-group">
+            <label for="name">الاسم الثلاثي:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="vark">حسب أنماط التعلم (VARK)، المتعلم الذي يفضل مشاهدة الصور تكون نسبة استيعابه:</label>
+            <select id="vark" name="vark" required>
+                <option value="">اختر الإجابة...</option>
+                <option value="10%">10%</option>
+                <option value="30%">30%</option>
+                <option value="50%">50%</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="tna">ما هي مستويات تحليل الاحتياجات التدريبية (TNA)؟</label>
+            <select id="tna" name="tna" required>
+                <option value="">اختر الإجابة...</option>
+                <option value="فرد - وظيفة - مؤسسة">فرد - وظيفة - مؤسسة</option>
+                <option value="المشاركة - بيئة التدريب - المتدرب">المشاركة - بيئة التدريب - المتدرب</option>
+                <option value="الوضع الحالي - الوضع المطلوب">الوضع الحالي - الوضع المطلوب</option>
+            </select>
+        </div>
+
+        <button type="submit">إرسال الإجابات</button>
+    </form>
+    
+    <div id="successMessage" class="success-msg">تم إرسال إجاباتك بنجاح! شكراً لمشاركتك.</div>
+</div>
+
+<script>
+    const form = document.getElementById('quizForm');
+    // ضع هنا الرابط الذي حصلت عليه من Google Apps Script
+    const scriptURL = 'YOUR_GOOGLE_SCRIPT_WEB_APP_URL_HERE';
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        const data = new URLSearchParams(formData);
+
+        fetch(scriptURL, { method: 'POST', body: data })
+            .then(response => {
+                form.style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+            })
+            .catch(error => console.error('Error!', error.message));
+    });
+</script>
+
+</body>
+</html>
