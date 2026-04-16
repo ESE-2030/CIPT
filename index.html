@@ -3,83 +3,333 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نشاط المحاضرة الثانية - CIPT</title>
+    <title>تحدي المحاضرة الثانية - CIPT</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; padding: 20px; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .logos { display: flex; justify-content: space-around; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
-        .logos img { max-height: 80px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-weight: bold; margin-bottom: 8px; color: #333; }
-        input[type="text"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-        button { background-color: #1a2b4c; color: white; border: none; padding: 12px 20px; cursor: pointer; border-radius: 5px; font-size: 16px; width: 100%; }
-        button:hover { background-color: #0d172a; }
-        .success-msg { display: none; color: green; text-align: center; font-weight: bold; margin-top: 20px; }
+        :root {
+            --primary-color: #1a2b4c;
+            --secondary-color: #27ae60;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .header-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .header-logos img {
+            max-height: 60px;
+            object-fit: contain;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+            min-height: 400px;
+        }
+
+        .screen {
+            padding: 40px 30px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.5s ease-in-out;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .screen.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+            position: relative;
+        }
+
+        .screen.exit {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+
+        h2 { color: var(--primary-color); text-align: center; margin-bottom: 20px; }
+        
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: bold; }
+        .input-group input { 
+            width: 100%; padding: 12px; border: 2px solid #e0e0e0; 
+            border-radius: 8px; font-size: 16px; box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        .input-group input:focus { border-color: var(--primary-color); outline: none; }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s, transform 0.1s;
+            font-weight: bold;
+        }
+        .btn:hover { background-color: #0d172a; }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        .options-container { display: flex; flex-direction: column; gap: 10px; }
+        .option-btn {
+            background-color: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: right;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .option-btn:hover { background-color: #e2e8f0; border-color: #cbd5e1; }
+        .option-btn.correct { background-color: #d1fae5; border-color: var(--secondary-color); color: #065f46; }
+        .option-btn.wrong { background-color: #fee2e2; border-color: #ef4444; color: #991b1b; }
+
+        .progress-bar {
+            height: 6px;
+            background-color: #e0e0e0;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: var(--secondary-color);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .feedback { text-align: center; margin-top: 15px; font-weight: bold; min-height: 24px; }
+        .loader { display: none; text-align: center; margin-top: 20px; color: var(--primary-color); font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="logos">
-        <img src="cipt-logo.png" alt="CIPT Logo">
-        <img src="ese-logo.png" alt="ESE Logo">
-        <img src="nu-logo.png" alt="Nile University Logo">
-        <img src="asit-logo.png" alt="ASIT Logo">
+    <div class="header-logos">
+        <img src="CIPT LOGO.jpg" alt="CIPT">
+        <img src="ese.png" alt="ESE">
+        <img src="NILE.png" alt="Nile University">
+        <img src="ASIT.png" alt="ASIT">
     </div>
 
-    <h2 style="text-align: center; color: #1a2b4c;">نشاط تفاعلي: كبسولة المحاضرة الثانية</h2>
-    
-    <form id="quizForm">
-        <div class="form-group">
-            <label for="name">الاسم الثلاثي:</label>
-            <input type="text" id="name" name="name" required>
+    <div class="app-container">
+        <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+        <div class="screen active" id="screen-welcome">
+            <h2>تحدي كبسولة المحاضرة الثانية</h2>
+            <p style="text-align: center; margin-bottom: 30px; line-height: 1.6;">
+                مرحباً بك في هذا النشاط التفاعلي السريع. دعنا ننعش ذاكرتنا بأهم ما ورد في المحاضرة الثانية بأسلوب ممتع!
+            </p>
+            <div class="input-group">
+                <label for="userName">الاسم الثلاثي:</label>
+                <input type="text" id="userName" placeholder="أدخل اسمك للبدء..." required>
+            </div>
+            <button class="btn" onclick="startQuiz()">ابدأ التحدي</button>
         </div>
 
-        <div class="form-group">
-            <label for="vark">حسب أنماط التعلم (VARK)، المتعلم الذي يفضل مشاهدة الصور تكون نسبة استيعابه:</label>
-            <select id="vark" name="vark" required>
-                <option value="">اختر الإجابة...</option>
-                <option value="10%">10%</option>
-                <option value="30%">30%</option>
-                <option value="50%">50%</option>
-            </select>
+        <div class="screen" id="screen-quiz">
+            <h3 id="question-text" style="line-height: 1.5; color: var(--primary-color);"></h3>
+            <div class="options-container" id="options-container"></div>
+            <div class="feedback" id="feedback-text"></div>
         </div>
 
-        <div class="form-group">
-            <label for="tna">ما هي مستويات تحليل الاحتياجات التدريبية (TNA)؟</label>
-            <select id="tna" name="tna" required>
-                <option value="">اختر الإجابة...</option>
-                <option value="فرد - وظيفة - مؤسسة">فرد - وظيفة - مؤسسة</option>
-                <option value="المشاركة - بيئة التدريب - المتدرب">المشاركة - بيئة التدريب - المتدرب</option>
-                <option value="الوضع الحالي - الوضع المطلوب">الوضع الحالي - الوضع المطلوب</option>
-            </select>
+        <div class="screen" id="screen-result">
+            <h2>اكتمل التحدي! 🚀</h2>
+            <p style="text-align: center; font-size: 18px;" id="final-score-text"></p>
+            <p style="text-align: center; color: #666; margin-bottom: 20px;">يتم الآن إرسال نتائجك إلى لوحة بيانات المدرب...</p>
+            <div class="loader" id="loader">جاري الحفظ في قاعدة البيانات... ⏳</div>
+            <div class="feedback" id="final-status" style="color: var(--secondary-color); display: none;">✅ تم حفظ النتيجة بنجاح! شكراً لمشاركتك.</div>
         </div>
+    </div>
 
-        <button type="submit">إرسال الإجابات</button>
-    </form>
-    
-    <div id="successMessage" class="success-msg">تم إرسال إجاباتك بنجاح! شكراً لمشاركتك.</div>
-</div>
+    <script>
+        // الرابط الخاص بـ Google Apps Script
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0IwnsU9r71Oo0J0wKv5ayLY69NtHlo6yi2Owgyc5CE1NFY4rOhmQKAVpvhspk-A/exec';
 
-<script>
-    const form = document.getElementById('quizForm');
-    // ضع هنا الرابط الذي حصلت عليه من Google Apps Script
-    const scriptURL = 'YOUR_GOOGLE_SCRIPT_WEB_APP_URL_HERE';
+        // بنية البيانات للأسئلة
+        const questions = [
+            {
+                id: "vark",
+                text: "حسب أنماط التعلم (VARK)، المتعلم الذي يفضل مشاهدة الصور تكون نسبة استيعابه:",
+                options: ["10%", "30%", "50%", "90%"],
+                answer: 1 // الفهرس الصحيح (30%)
+            },
+            {
+                id: "tna",
+                text: "ما هي مستويات تحليل الاحتياجات التدريبية (TNA)؟",
+                options: [
+                    "الوضع الحالي - الوضع المطلوب",
+                    "المشاركة - بيئة التدريب - المتدرب",
+                    "فرد - وظيفة - مؤسسة"
+                ],
+                answer: 2
+            },
+            {
+                id: "pyramid",
+                text: "حسب هرم إدجار ديل، الطريقة التي تحقق أعلى نسبة استيعاب (90%) هي:",
+                options: ["القراءة", "الاستماع", "المشاركة والنقاش", "الممارسة العملية"],
+                answer: 3
+            }
+        ];
 
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        
-        const formData = new FormData(form);
-        const data = new URLSearchParams(formData);
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userData = { name: '', answers: {} };
 
-        fetch(scriptURL, { method: 'POST', body: data })
-            .then(response => {
-                form.style.display = 'none';
-                document.getElementById('successMessage').style.display = 'block';
-            })
-            .catch(error => console.error('Error!', error.message));
-    });
-</script>
+        function startQuiz() {
+            const nameInput = document.getElementById('userName').value.trim();
+            if (!nameInput) {
+                alert('يرجى إدخال اسمك أولاً');
+                return;
+            }
+            userData.name = nameInput;
+            transitionScreen('screen-welcome', 'screen-quiz');
+            loadQuestion();
+        }
 
+        function loadQuestion() {
+            const q = questions[currentQuestionIndex];
+            document.getElementById('question-text').innerText = `السؤال ${currentQuestionIndex + 1}: ${q.text}`;
+            document.getElementById('feedback-text').innerText = '';
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            updateProgress();
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            // تعطيل جميع الأزرار لمنع النقر المتعدد
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.style.pointerEvents = 'none');
+
+            const q = questions[currentQuestionIndex];
+            userData.answers[q.id] = q.options[selectedIndex]; // حفظ إجابة المستخدم
+
+            if (selectedIndex === q.answer) {
+                btnElement.classList.add('correct');
+                document.getElementById('feedback-text').style.color = 'var(--secondary-color)';
+                document.getElementById('feedback-text').innerText = 'إجابة صحيحة! ✨';
+                score++;
+            } else {
+                btnElement.classList.add('wrong');
+                allBtns[q.answer].classList.add('correct'); // إظهار الإجابة الصحيحة
+                document.getElementById('feedback-text').style.color = '#ef4444';
+                document.getElementById('feedback-text').innerText = 'إجابة غير دقيقة، حاول التركيز أكثر في المرة القادمة!';
+            }
+
+            setTimeout(nextQuestion, 1500);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                // مؤثر حركي خفيف بين الأسئلة
+                const quizScreen = document.getElementById('screen-quiz');
+                quizScreen.classList.remove('active');
+                setTimeout(() => {
+                    loadQuestion();
+                    quizScreen.classList.add('active');
+                }, 300);
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestionIndex / questions.length) * 100;
+            document.getElementById('progress').style.width = `${progress}%`;
+        }
+
+        function finishQuiz() {
+            document.getElementById('progress').style.width = '100%';
+            transitionScreen('screen-quiz', 'screen-result');
+            document.getElementById('final-score-text').innerText = `لقد أجبت بشكل صحيح على ${score} من أصل ${questions.length} أسئلة.`;
+            submitData();
+        }
+
+        function submitData() {
+            document.getElementById('loader').style.display = 'block';
+
+            // تجهيز البيانات لإرسالها لشيت جوجل
+            const formData = new URLSearchParams();
+            formData.append('name', userData.name);
+            formData.append('vark', userData.answers['vark'] || '');
+            formData.append('tna', userData.answers['tna'] || '');
+            // يمكنك إضافة score أو pyramid لاحقاً في جوجل شيت إذا أردت
+            
+            fetch(SCRIPT_URL, { method: 'POST', body: formData })
+                .then(response => {
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('final-status').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('loader').innerText = 'حدث خطأ في الاتصال بقاعدة البيانات.';
+                });
+        }
+
+        function transitionScreen(hideId, showId) {
+            const hideEl = document.getElementById(hideId);
+            const showEl = document.getElementById(showId);
+            hideEl.classList.remove('active');
+            hideEl.classList.add('exit');
+            setTimeout(() => {
+                hideEl.classList.remove('exit');
+                showEl.classList.add('active');
+            }, 500);
+        }
+    </script>
 </body>
 </html>
