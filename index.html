@@ -75,9 +75,11 @@
     </p>
 
     <script>
+        // ضع الرابط الخاص بك هنا بالأسفل
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxB9Q2t8DJgVo92agQyh4Mo43edVOy6czJhgLniFfYz-RCyhRBBitaJUPBtavHsnqaD/exec';
         
         let current = 0, score = 0, timer, sec = 1200, user = {};
+
         const questions = [
             { q: "حسب هرم ديل، نسبة الاستيعاب عند 'الممارسة الفعلية' هي:", a: ["50%", "70%", "90%"], c: 2 },
             { q: "يركز تعليم الكبار (Andragogy) بشكل أساسي على:", a: ["التلقين", "حل المشكلات", "الحفظ"], c: 1 },
@@ -91,15 +93,27 @@
             { q: "أي مستوى يحقق 70% استيعاب حسب هرم ديل؟", a: ["السمع", "المشاركة والنقاش", "القراءة"], c: 1 }
         ];
 
+        // تأكد من وجود دالة check هنا
         async function check() {
             const m = document.getElementById('mob').value.trim();
             if(!m) { document.getElementById('msg').innerText = "يرجى إدخال رقم الواتساب"; return; }
+            
             const btn = document.getElementById('checkBtn');
             btn.innerText = "جاري التحقق...";
             btn.disabled = true;
+            document.getElementById('msg').innerText = "";
+
             try {
                 const r = await fetch(`${SCRIPT_URL}?mobile=${m}`);
                 const d = await r.json();
+                
                 if(d.status === 'success') {
                     user = { mobile: m, name: d.name, code: d.code };
-                    document.getElementById('
+                    document.getElementById('n').innerText = d.name;
+                    document.getElementById('code').innerText = d.code; // تأكد من اسم الـ ID
+                    show('welcome');
+                } else { 
+                    document.getElementById('msg').innerText = "الرقم غير مسجل!"; 
+                }
+            } catch(e) { 
+                document.getElementById('msg').innerText = "خطأ في الاتصال بالسيرفر.";
