@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار CIPT - المحاضرة الثانية</title>
+    <title>تحدي CIPT - المحاضرة الثانية</title>
     <style>
         :root { --primary: #1a2b4c; --accent: #27ae60; --bg: #f0f4f8; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
@@ -24,6 +24,7 @@
     </style>
 </head>
 <body>
+
     <div class="logos">
         <img src="CIPT LOGO.jpg" alt="CIPT">
         <img src="ese.png" alt="ESE">
@@ -47,10 +48,10 @@
 
         <div class="screen" id="welcome">
             <div class="badge">
-                <p>الاسم: <strong id="n" style="color: var(--primary);"></strong></p>
-                <p>كود المتدرب: <strong id="c" style="color: var(--primary);"></strong></p>
+                <p>الاسم: <strong id="trainee-name" style="color: var(--primary);"></strong></p>
+                <p>كود المتدرب: <strong id="trainee-code" style="color: var(--primary);"></strong></p>
             </div>
-            <p style="line-height:1.6">لديك <strong>10 أسئلة</strong> عن "تعليم الكبار وهرم إدجار ديل". الوقت المتاح: <strong>20 دقيقة</strong>.</p>
+            <p style="line-height:1.6">تم التحقق من بياناتك. لديك <strong>10 أسئلة</strong> عن "تعليم الكبار وهرم إدجار ديل". الوقت المتاح: <strong>20 دقيقة</strong>.</p>
             <button class="btn" onclick="start()">ابدأ التحدي الآن</button>
         </div>
 
@@ -75,7 +76,7 @@
     </p>
 
     <script>
-        // ضع الرابط الخاص بك هنا بالأسفل
+        // --- ضع رابط الـ Web App الخاص بك هنا ---
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxB9Q2t8DJgVo92agQyh4Mo43edVOy6czJhgLniFfYz-RCyhRBBitaJUPBtavHsnqaD/exec';
         
         let current = 0, score = 0, timer, sec = 1200, user = {};
@@ -93,10 +94,13 @@
             { q: "أي مستوى يحقق 70% استيعاب حسب هرم ديل؟", a: ["السمع", "المشاركة والنقاش", "القراءة"], c: 1 }
         ];
 
-        // تأكد من وجود دالة check هنا
+        // دالة التحقق من المتدرب
         async function check() {
             const m = document.getElementById('mob').value.trim();
-            if(!m) { document.getElementById('msg').innerText = "يرجى إدخال رقم الواتساب"; return; }
+            if(!m) { 
+                document.getElementById('msg').innerText = "يرجى إدخال رقم الواتساب"; 
+                return; 
+            }
             
             const btn = document.getElementById('checkBtn');
             btn.innerText = "جاري التحقق...";
@@ -109,11 +113,79 @@
                 
                 if(d.status === 'success') {
                     user = { mobile: m, name: d.name, code: d.code };
-                    document.getElementById('n').innerText = d.name;
-                    document.getElementById('code').innerText = d.code; // تأكد من اسم الـ ID
+                    document.getElementById('trainee-name').innerText = d.name;
+                    document.getElementById('trainee-code').innerText = d.code;
                     show('welcome');
                 } else { 
-                    document.getElementById('msg').innerText = "الرقم غير مسجل!"; 
+                    document.getElementById('msg').innerText = "الرقم غير مسجل في البرنامج!"; 
                 }
             } catch(e) { 
-                document.getElementById('msg').innerText = "خطأ في الاتصال بالسيرفر.";
+                document.getElementById('msg').innerText = "خطأ في الاتصال بالسيرفر. تأكد من إعدادات النشر."; 
+            } finally {
+                btn.innerText = "تحقق من البيانات";
+                btn.disabled = false;
+            }
+        }
+
+        function start() {
+            show('quiz');
+            document.getElementById('timer').style.display = 'block';
+            timer = setInterval(() => {
+                sec--;
+                let min = Math.floor(sec/60), s = sec%60;
+                document.getElementById('timer').innerText = min + ':' + (s<10?'0':'') + s;
+                if(sec <= 0) end();
+            }, 1000);
+            load();
+        }
+
+        function load() {
+            const q = questions[current];
+            document.getElementById('progress').innerText = "السؤال " + (current+1) + " من 10";
+            document.getElementById('q-text').innerText = q.q;
+            const o = document.getElementById('opts'); o.innerHTML = '';
+            
+            let answered = false;
+            q.a.forEach((opt, i) => {
+                const b = document.createElement('button');
+                b.className = 'option';
+                b.innerText = opt;
+                b.onclick = () => { 
+                    if(answered) return;
+                    answered = true;
+                    if(i===q.c) score++; 
+                    current++; 
+                    if(current<10) setTimeout(load, 200); else setTimeout(end, 200); 
+                };
+                o.appendChild(b);
+            });
+        }
+
+        function end() {
+            clearInterval(timer);
+            show('finish');
+            document.getElementById('score').innerText = score;
+            
+            const f = new URLSearchParams();
+            f.append('mobile', user.mobile);
+            f.append('score', score);
+            
+            fetch(SCRIPT_URL, { 
+                method: 'POST', 
+                body: f,
+                mode: 'no-cors' 
+            }).then(() => {
+                document.getElementById('status').innerText = "✅ تم حفظ نتيجتك في قاعدة البيانات بنجاح.";
+                document.getElementById('status').style.color = "var(--accent)";
+            }).catch(() => {
+                document.getElementById('status').innerText = "⚠️ حدث خطأ في الحفظ. يرجى تصوير الشاشة.";
+            });
+        }
+
+        function show(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+    </script>
+</body>
+</html>
