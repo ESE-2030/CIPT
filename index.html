@@ -1,191 +1,58 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحدي CIPT - المحاضرة الثانية</title>
-    <style>
-        :root { --primary: #1a2b4c; --accent: #27ae60; --bg: #f0f4f8; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-        .logos { display: flex; justify-content: center; gap: 15px; padding: 15px; background: white; border-radius: 10px; width: 100%; max-width: 600px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); flex-wrap: wrap; }
-        .logos img { height: 50px; object-fit: contain; }
-        .card { background: white; width: 100%; max-width: 600px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: var(--primary); color: white; padding: 20px; text-align: center; }
-        .screen { padding: 30px; display: none; min-height: 350px;}
-        .screen.active { display: block; animation: fadeIn 0.4s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; transition: 0.3s;}
-        .btn:hover { background: #0d172a; }
-        .option { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 8px; text-align: right; background: white; cursor: pointer; transition: 0.2s; font-size: 16px; }
-        .option:hover { border-color: var(--primary); background: #f8fafc; }
-        .timer { font-size: 24px; color: #ffeb3b; font-weight: bold; margin: 10px 0; }
-        input { width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 18px; text-align: center; margin-bottom: 15px; box-sizing: border-box; }
-        .badge { background: #eef2f7; padding: 15px; border-radius: 10px; border-right: 5px solid var(--accent); margin-bottom: 20px; }
-    </style>
-</head>
-<body>
+<script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwojQLnA0ax_97LuyaTZwmJh-9BjnDbyCfPH_IBg1R_fv7paMu_GGi3SZbjCNYaZNwT/exec';
+    
+    let current = 0, score = 0, timer, sec = 1200, user = {};
 
-    <div class="logos">
-        <img src="CIPT LOGO.jpg" alt="CIPT">
-        <img src="ese.png" alt="ESE">
-        <img src="NILE.png" alt="Nile">
-        <img src="ASIT.png" alt="ASIT">
-    </div>
-
-    <div class="card">
-        <div class="header">
-            <h3 style="margin: 0;">تحدي كبسولة المحاضرة الثانية</h3>
-            <div id="timer" class="timer" style="display:none">20:00</div>
-        </div>
-
-        <div class="screen active" id="login">
-            <h3 style="text-align:center">تحقق من بيانات التسجيل</h3>
-            <p style="text-align:center; color: #64748b; font-size: 14px;">أدخل رقم الواتساب المسجل في الحضور لتفعيل الاختبار</p>
-            <input type="tel" id="mob" placeholder="مثال: 01142751397" maxlength="11">
-            <button class="btn" onclick="check()" id="checkBtn">تحقق من البيانات</button>
-            <p id="msg" style="color:red; text-align:center; font-weight:bold; margin-top:10px;"></p>
-        </div>
-
-        <div class="screen" id="welcome">
-            <div class="badge">
-                <p>الاسم: <strong id="trainee-name" style="color: var(--primary);"></strong></p>
-                <p>كود المتدرب: <strong id="trainee-code" style="color: var(--primary);"></strong></p>
-            </div>
-            <p style="line-height:1.6">تم التحقق من بياناتك. لديك <strong>10 أسئلة</strong> عن "تعليم الكبار وهرم إدجار ديل". الوقت المتاح: <strong>20 دقيقة</strong>.</p>
-            <button class="btn" onclick="start()">ابدأ التحدي الآن</button>
-        </div>
-
-        <div class="screen" id="quiz">
-            <p id="progress" style="color:#64748b; font-weight:bold"></p>
-            <h3 id="q-text" style="line-height:1.5; color: var(--primary);"></h3>
-            <div id="opts"></div>
-        </div>
-
-        <div class="screen" id="finish">
-            <h2 style="text-align:center; color: var(--primary);">انتهى التحدي! 🎉</h2>
-            <div style="background: #f8fafc; border: 2px dashed #cbd5e1; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;">
-                <h1 id="score" style="color:var(--accent); font-size: 48px; margin: 0;"></h1>
-                <p style="margin: 5px 0; color: #64748b;">نقاط من أصل 10</p>
-            </div>
-            <p id="status" style="text-align:center; color:#64748b; font-weight:bold;">جاري حفظ درجتك في قاعدة البيانات...</p>
-        </div>
-    </div>
-
-    <p style="text-align:center; font-size:13px; color:#64748b; margin-top:20px; font-weight: bold;">
-        &copy; جميع حقوق الملكية محفوظة لمؤسسة مهندسون من أجل مصر المستدامة
-    </p>
-
-    <script>
-        // --- ضع رابط الـ Web App الخاص بك هنا ---
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxtnwZOHSuUrBP8BLv7QXDRY6fJqhjWgUW0I7Re3wn65bNxKKaENyeHvF_iK9pHLOo/exec';
+    async function check() {
+        const m = document.getElementById('mob').value.trim();
+        if(!m) { document.getElementById('msg').innerText = "يرجى إدخال رقم الواتساب"; return; }
         
-        let current = 0, score = 0, timer, sec = 1200, user = {};
+        const btn = document.getElementById('checkBtn');
+        btn.innerText = "جاري التحقق...";
+        btn.disabled = true;
 
-        const questions = [
-            { q: "حسب هرم ديل، نسبة الاستيعاب عند 'الممارسة الفعلية' هي:", a: ["50%", "70%", "90%"], c: 2 },
-            { q: "يركز تعليم الكبار (Andragogy) بشكل أساسي على:", a: ["التلقين", "حل المشكلات", "الحفظ"], c: 1 },
-            { q: "من هو مؤسس نظرية تعليم الكبار؟", a: ["مالكولم نولز", "إدجار ديل", "بافلوف"], c: 0 },
-            { q: "نسبة تذكر المعلومات عند 'القراءة' فقط تبلغ:", a: ["10%", "20%", "30%"], c: 0 },
-            { q: "خبرة المتدرب البالغ تعتبر في العملية التدريبية:", a: ["عائقاً", "مورداً أساسياً", "ثانوية"], c: 1 },
-            { q: "قاعدة 70-20-10 تشير إلى أن 70% من التعلم يأتي من:", a: ["الدورات", "الخبرة والممارسة", "القراءة"], c: 1 },
-            { q: "في هرم ديل، 'مشاهدة فيديو' تحقق نسبة استيعاب:", a: ["30%", "50%", "70%"], c: 1 },
-            { q: "يحتاج الشخص البالغ لمعرفة ___ قبل بدء التعلم:", a: ["لماذا يتعلم هذا", "مكان القاعة", "اسم المدرب"], c: 0 },
-            { q: "الدافع للتعلم عند الكبار يكون في الغالب:", a: ["داخلياً", "خارجياً فقط", "إجبارياً"], c: 0 },
-            { q: "أي مستوى يحقق 70% استيعاب حسب هرم ديل؟", a: ["السمع", "المشاركة والنقاش", "القراءة"], c: 1 }
-        ];
-
-        // دالة التحقق من المتدرب
-        async function check() {
-            const m = document.getElementById('mob').value.trim();
-            if(!m) { 
-                document.getElementById('msg').innerText = "يرجى إدخال رقم الواتساب"; 
-                return; 
+        try {
+            const r = await fetch(`${SCRIPT_URL}?mobile=${m}`);
+            const d = await r.json();
+            
+            if(d.status === 'success') {
+                user = { mobile: m, name: d.name, code: d.code };
+                // هنا تم ضبط عرض الاسم والكود في مكانهما الصحيح
+                document.getElementById('trainee-name').innerText = d.name;
+                document.getElementById('trainee-code').innerText = d.code;
+                show('welcome');
+            } else { 
+                document.getElementById('msg').innerText = "الرقم غير مسجل!"; 
             }
-            
-            const btn = document.getElementById('checkBtn');
-            btn.innerText = "جاري التحقق...";
-            btn.disabled = true;
-            document.getElementById('msg').innerText = "";
-
-            try {
-                const r = await fetch(`${SCRIPT_URL}?mobile=${m}`);
-                const d = await r.json();
-                
-                if(d.status === 'success') {
-                    user = { mobile: m, name: d.name, code: d.code };
-                    document.getElementById('trainee-name').innerText = d.name;
-                    document.getElementById('trainee-code').innerText = d.code;
-                    show('welcome');
-                } else { 
-                    document.getElementById('msg').innerText = "الرقم غير مسجل في البرنامج!"; 
-                }
-            } catch(e) { 
-                document.getElementById('msg').innerText = "خطأ في الاتصال بالسيرفر. تأكد من إعدادات النشر."; 
-            } finally {
-                btn.innerText = "تحقق من البيانات";
-                btn.disabled = false;
-            }
+        } catch(e) { 
+            document.getElementById('msg').innerText = "خطأ في الاتصال. تأكد من إعدادات النشر.";
+        } finally {
+            btn.innerText = "تحقق من البيانات";
+            btn.disabled = false;
         }
+    }
 
-        function start() {
-            show('quiz');
-            document.getElementById('timer').style.display = 'block';
-            timer = setInterval(() => {
-                sec--;
-                let min = Math.floor(sec/60), s = sec%60;
-                document.getElementById('timer').innerText = min + ':' + (s<10?'0':'') + s;
-                if(sec <= 0) end();
-            }, 1000);
-            load();
-        }
-
-        function load() {
-            const q = questions[current];
-            document.getElementById('progress').innerText = "السؤال " + (current+1) + " من 10";
-            document.getElementById('q-text').innerText = q.q;
-            const o = document.getElementById('opts'); o.innerHTML = '';
-            
-            let answered = false;
-            q.a.forEach((opt, i) => {
-                const b = document.createElement('button');
-                b.className = 'option';
-                b.innerText = opt;
-                b.onclick = () => { 
-                    if(answered) return;
-                    answered = true;
-                    if(i===q.c) score++; 
-                    current++; 
-                    if(current<10) setTimeout(load, 200); else setTimeout(end, 200); 
-                };
-                o.appendChild(b);
-            });
-        }
-
-        function end() {
-            clearInterval(timer);
-            show('finish');
-            document.getElementById('score').innerText = score;
-            
-            const f = new URLSearchParams();
-            f.append('mobile', user.mobile);
-            f.append('score', score);
-            
-            fetch(SCRIPT_URL, { 
-                method: 'POST', 
-                body: f,
-                mode: 'no-cors' 
-            }).then(() => {
-                document.getElementById('status').innerText = "✅ تم حفظ نتيجتك في قاعدة البيانات بنجاح.";
-                document.getElementById('status').style.color = "var(--accent)";
-            }).catch(() => {
-                document.getElementById('status').innerText = "⚠️ حدث خطأ في الحفظ. يرجى تصوير الشاشة.";
-            });
-        }
-
-        function show(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-    </script>
-</body>
-</html>
+    function end() {
+        clearInterval(timer);
+        show('finish');
+        document.getElementById('score').innerText = score;
+        
+        // إرسال البيانات للتسجيل في الشيت (الدرجة + تفعيل وقت الإرسال تلقائياً)
+        const f = new URLSearchParams();
+        f.append('mobile', user.mobile);
+        f.append('score', score);
+        
+        fetch(SCRIPT_URL, { 
+            method: 'POST', 
+            body: f,
+            mode: 'no-cors' 
+        }).then(() => {
+            document.getElementById('status').innerText = "✅ تم حفظ نتيجتك ووقت الإرسال بنجاح.";
+            document.getElementById('status').style.color = "#27ae60";
+        }).catch(() => {
+            document.getElementById('status').innerText = "⚠️ حدث خطأ في الحفظ.";
+        });
+    }
+    
+    // باقي الدوال (start, load, show) تظل كما هي بدون تغيير
+</script>
