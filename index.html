@@ -9,15 +9,26 @@
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
         .logos { display: flex; justify-content: center; gap: 15px; padding: 15px; background: white; border-radius: 10px; width: 100%; max-width: 600px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); flex-wrap: wrap; }
         .logos img { height: 50px; object-fit: contain; }
-        .card { background: white; width: 100%; max-width: 600px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
+        .card { background: white; width: 100%; max-width: 600px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; margin-bottom: 30px; }
         .header { background: var(--primary); color: white; padding: 20px; text-align: center; }
         .screen { padding: 30px; display: none; min-height: 350px;}
         .screen.active { display: block; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; transition: 0.3s;}
         .btn:hover { background: #0d172a; }
-        .option { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 8px; text-align: right; background: white; cursor: pointer; transition: 0.2s; font-size: 16px; }
+        .option { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 8px; text-align: right; background: white; cursor: pointer; transition: 0.2s; font-size: 16px; font-weight: bold; color: #334155; }
         .option:hover { border-color: var(--primary); background: #f8fafc; }
+        
+        /* ألوان الإجابات الصحيحة والخاطئة */
+        .option.correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724 !important; }
+        .option.wrong { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24 !important; }
+        
+        /* تنسيق تقرير الأخطاء */
+        .review-box { text-align: right; background: #f8fafc; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #e2e8f0; }
+        .review-q { color: var(--primary); font-weight: bold; margin-bottom: 8px; margin-top: 0; line-height: 1.4;}
+        .review-ans { color: #dc3545; font-size: 14px; margin: 5px 0; text-decoration: line-through;}
+        .review-correct { color: #28a745; font-size: 15px; margin: 5px 0; font-weight: bold;}
+
         .timer { font-size: 24px; color: #ffeb3b; font-weight: bold; margin: 10px 0; }
         input { width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 18px; text-align: center; margin-bottom: 15px; box-sizing: border-box; }
         .badge { background: #eef2f7; padding: 15px; border-radius: 10px; border-right: 5px solid var(--accent); margin-bottom: 20px; }
@@ -35,12 +46,13 @@
     <div class="card">
         <div class="header">
             <h3 style="margin: 0;">تحدي كبسولة المحاضرة الثانية</h3>
-            <div id="timer" class="timer" style="display:none">20:00</div>
+            <div id="timer" class="timer" style="display:none">10:00</div>
         </div>
 
         <div class="screen active" id="login">
             <h3 style="text-align:center">تحقق من بيانات التسجيل</h3>
-            <input type="tel" id="mob" placeholder="أدخل رقم الواتساب المسجل..." maxlength="11">
+            <p style="text-align:center; color: #64748b; font-size: 14px;">أدخل رقم الواتساب المسجل في الحضور لتفعيل الاختبار</p>
+            <input type="tel" id="mob" placeholder="مثال: 01142751397" maxlength="11">
             <button class="btn" onclick="check()" id="checkBtn">تحقق من البيانات</button>
             <p id="msg" style="color:red; text-align:center; font-weight:bold; margin-top:10px;"></p>
         </div>
@@ -50,32 +62,38 @@
                 <p>الاسم: <strong id="trainee-name" style="color: var(--primary);"></strong></p>
                 <p>كود المتدرب: <strong id="trainee-code" style="color: var(--primary);"></strong></p>
             </div>
-            <p>لديك 10 أسئلة عن المحاضرة الثانية. الوقت: 20 دقيقة.</p>
+            <p style="line-height:1.6">لديك <strong>10 أسئلة</strong> عن "تعليم الكبار وهرم إدجار ديل". الوقت المتاح: <strong>10 دقائق</strong>.</p>
             <button class="btn" onclick="start()">ابدأ التحدي الآن</button>
         </div>
 
         <div class="screen" id="quiz">
             <p id="progress" style="color:#64748b; font-weight:bold"></p>
-            <h3 id="q-text" style="line-height:1.5"></h3>
+            <h3 id="q-text" style="line-height:1.5; color: var(--primary);"></h3>
             <div id="opts"></div>
         </div>
 
         <div class="screen" id="finish">
-            <h2 style="text-align:center">انتهى التحدي! 🎉</h2>
-            <h1 id="score" style="text-align:center; color:var(--accent); font-size: 48px;"></h1>
-            <p id="status" style="text-align:center; color:#64748b; font-weight:bold;">جاري حفظ النتيجة ووقت الإرسال...</p>
+            <h2 style="text-align:center; color: var(--primary);">انتهى التحدي! 🎉</h2>
+            <div style="background: #f8fafc; border: 2px dashed #cbd5e1; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;">
+                <h1 id="score" style="color:var(--accent); font-size: 48px; margin: 0;"></h1>
+                <p style="margin: 5px 0; color: #64748b;">نقاط من أصل 10</p>
+            </div>
+            <p id="status" style="text-align:center; color:#64748b; font-weight:bold; margin-bottom: 20px;">جاري حفظ النتيجة ووقت الإرسال...</p>
+            
+            <div id="review-section"></div>
         </div>
     </div>
 
-    <p style="text-align:center; font-size:12px; color:#94a3b8; margin-top:20px;">
+    <p style="text-align:center; font-size:12px; color:#94a3b8; margin-top:10px; margin-bottom:30px;">
         &copy; جميع حقوق الملكية محفوظة لمؤسسة مهندسون من أجل مصر المستدامة
     </p>
 
     <script>
-        // ضع رابط الـ Web App الخاص بك هنا
+        // الرابط الخاص بك
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyAoDwzddNmVV0RXIUfjp-imEfYU8w9kNNv9ByRQaqQlL1kKpfrFqY4PRFTr0cCLeqs/exec';
         
-        let current = 0, score = 0, timer, sec = 1200, user = {};
+        let current = 0, score = 0, timer, sec = 600, user = {};
+        let userAnswers = []; // مصفوفة لتخزين إجابات المتدرب للمراجعة
 
         const questions = [
             { q: "حسب هرم ديل، نسبة الاستيعاب عند 'الممارسة الفعلية' هي:", a: ["50%", "70%", "90%"], c: 2 },
@@ -94,6 +112,7 @@
             const m = document.getElementById('mob').value.trim();
             if(!m) { document.getElementById('msg').innerText = "يرجى إدخال الرقم"; return; }
             document.getElementById('checkBtn').innerText = "جاري التحقق...";
+            document.getElementById('checkBtn').disabled = true;
             try {
                 const r = await fetch(`${SCRIPT_URL}?mobile=${m}`);
                 const d = await r.json();
@@ -104,7 +123,10 @@
                     show('welcome');
                 } else { document.getElementById('msg').innerText = "الرقم غير مسجل!"; }
             } catch(e) { document.getElementById('msg').innerText = "خطأ في الاتصال بالسيرفر"; }
-            finally { document.getElementById('checkBtn').innerText = "تحقق من البيانات"; }
+            finally { 
+                document.getElementById('checkBtn').innerText = "تحقق من البيانات"; 
+                document.getElementById('checkBtn').disabled = false;
+            }
         }
 
         function start() {
@@ -123,15 +145,44 @@
             const q = questions[current];
             document.getElementById('progress').innerText = "السؤال " + (current+1) + " من 10";
             document.getElementById('q-text').innerText = q.q;
-            const o = document.getElementById('opts'); o.innerHTML = '';
+            const o = document.getElementById('opts'); 
+            o.innerHTML = '';
+            
+            let answered = false;
+
             q.a.forEach((opt, i) => {
                 const b = document.createElement('button');
                 b.className = 'option';
                 b.innerText = opt;
+                
                 b.onclick = () => { 
-                    if(i===q.c) score++; 
+                    if(answered) return; // منع الضغط أكثر من مرة
+                    answered = true;
+                    
+                    // حفظ الإجابة للمراجعة النهائية
+                    userAnswers.push({
+                        question: q.q,
+                        selectedAnswer: opt,
+                        correctAnswer: q.a[q.c],
+                        isCorrect: i === q.c
+                    });
+
+                    // إضافة المؤشرات البصرية الفورية
+                    if(i === q.c) {
+                        b.classList.add('correct');
+                        score++; 
+                    } else {
+                        b.classList.add('wrong');
+                        // إضاءة الإجابة الصحيحة باللون الأخضر حتى لو أخطأ
+                        o.children[q.c].classList.add('correct');
+                    }
+
                     current++; 
-                    if(current < 10) load(); else end(); 
+                    
+                    // الانتظار ثانية ونصف لرؤية النتيجة قبل الانتقال للسؤال التالي
+                    setTimeout(() => {
+                        if(current < 10) load(); else end(); 
+                    }, 1500);
                 };
                 o.appendChild(b);
             });
@@ -141,6 +192,27 @@
             clearInterval(timer);
             show('finish');
             document.getElementById('score').innerText = score + " / 10";
+            
+            // إنشاء قسم المراجعة (إظهار الأخطاء)
+            let reviewHTML = "";
+            let wrongAnswers = userAnswers.filter(ans => !ans.isCorrect);
+            
+            if(wrongAnswers.length > 0) {
+                reviewHTML += `<h3 style='text-align:center; color:#e74c3c; margin-top: 30px; border-top: 2px dashed #e2e8f0; padding-top: 20px;'>مراجعة الأخطاء 📋</h3>`;
+                wrongAnswers.forEach(ans => {
+                    reviewHTML += `
+                    <div class='review-box'>
+                        <p class='review-q'>${ans.question}</p>
+                        <p class='review-ans'>إجابتك: ${ans.selectedAnswer}</p>
+                        <p class='review-correct'>✓ الإجابة الصحيحة: ${ans.correctAnswer}</p>
+                    </div>`;
+                });
+            } else {
+                reviewHTML += `<h3 style='text-align:center; color:#27ae60; margin-top: 30px;'>رائع! لم تخطئ في أي سؤال 🏆</h3>`;
+            }
+            document.getElementById('review-section').innerHTML = reviewHTML;
+
+            // حفظ النتيجة في جوجل شيت
             const f = new URLSearchParams();
             f.append('mobile', user.mobile);
             f.append('score', score);
