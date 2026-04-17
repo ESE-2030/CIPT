@@ -7,10 +7,8 @@
     <style>
         :root { --primary: #1a2b4c; --accent: #27ae60; --bg: #f0f4f8; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-        
         .logos { display: flex; justify-content: center; gap: 15px; padding: 15px; background: white; border-radius: 10px; width: 100%; max-width: 600px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); flex-wrap: wrap; }
         .logos img { height: 50px; object-fit: contain; }
-
         .card { background: white; width: 100%; max-width: 600px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
         .header { background: var(--primary); color: white; padding: 20px; text-align: center; }
         .screen { padding: 30px; display: none; min-height: 350px;}
@@ -26,7 +24,6 @@
     </style>
 </head>
 <body>
-
     <div class="logos">
         <img src="CIPT LOGO.jpg" alt="CIPT">
         <img src="ese.png" alt="ESE">
@@ -43,7 +40,7 @@
         <div class="screen active" id="login">
             <h3 style="text-align:center">تحقق من بيانات التسجيل</h3>
             <p style="text-align:center; color: #64748b; font-size: 14px;">أدخل رقم الواتساب المسجل في الحضور لتفعيل الاختبار</p>
-            <input type="tel" id="mob" placeholder="مثال: 01012345678" maxlength="11">
+            <input type="tel" id="mob" placeholder="مثال: 01142751397" maxlength="11">
             <button class="btn" onclick="check()" id="checkBtn">تحقق من البيانات</button>
             <p id="msg" style="color:red; text-align:center; font-weight:bold; margin-top:10px;"></p>
         </div>
@@ -51,7 +48,7 @@
         <div class="screen" id="welcome">
             <div class="badge">
                 <p>الاسم: <strong id="n" style="color: var(--primary);"></strong></p>
-                <p>الكود: <strong id="c" style="color: var(--primary);"></strong></p>
+                <p>كود المتدرب: <strong id="c" style="color: var(--primary);"></strong></p>
             </div>
             <p style="line-height:1.6">لديك <strong>10 أسئلة</strong> عن "تعليم الكبار وهرم إدجار ديل". الوقت المتاح: <strong>20 دقيقة</strong>.</p>
             <button class="btn" onclick="start()">ابدأ التحدي الآن</button>
@@ -78,13 +75,9 @@
     </p>
 
     <script>
-        // ------------------------------------------------------------------
-        // ضع الرابط الخاص بك هنا بين علامات التنصيص
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxB9Q2t8DJgVo92agQyh4Mo43edVOy6czJhgLniFfYz-RCyhRBBitaJUPBtavHsnqaD/exec';
-        // ------------------------------------------------------------------
         
         let current = 0, score = 0, timer, sec = 1200, user = {};
-
         const questions = [
             { q: "حسب هرم ديل، نسبة الاستيعاب عند 'الممارسة الفعلية' هي:", a: ["50%", "70%", "90%"], c: 2 },
             { q: "يركز تعليم الكبار (Andragogy) بشكل أساسي على:", a: ["التلقين", "حل المشكلات", "الحفظ"], c: 1 },
@@ -101,96 +94,12 @@
         async function check() {
             const m = document.getElementById('mob').value.trim();
             if(!m) { document.getElementById('msg').innerText = "يرجى إدخال رقم الواتساب"; return; }
-            
             const btn = document.getElementById('checkBtn');
             btn.innerText = "جاري التحقق...";
             btn.disabled = true;
-            document.getElementById('msg').innerText = "";
-
             try {
                 const r = await fetch(`${SCRIPT_URL}?mobile=${m}`);
                 const d = await r.json();
-                
                 if(d.status === 'success') {
                     user = { mobile: m, name: d.name, code: d.code };
-                    document.getElementById('n').innerText = d.name;
-                    document.getElementById('c').innerText = d.code;
-                    show('welcome');
-                } else { 
-                    document.getElementById('msg').innerText = "الرقم غير مسجل! تأكد من كتابته بشكل صحيح."; 
-                }
-            } catch(e) { 
-                document.getElementById('msg').innerText = "حدث خطأ في الاتصال بالسيرفر. يرجى المحاولة لاحقاً."; 
-            } finally {
-                btn.innerText = "تحقق من البيانات";
-                btn.disabled = false;
-            }
-        }
-
-        function start() {
-            show('quiz');
-            document.getElementById('timer').style.display = 'block';
-            timer = setInterval(() => {
-                sec--;
-                let min = Math.floor(sec/60), s = sec%60;
-                document.getElementById('timer').innerText = min + ':' + (s<10?'0':'') + s;
-                if(sec <= 0) end();
-            }, 1000);
-            load();
-        }
-
-        function load() {
-            const q = questions[current];
-            document.getElementById('progress').innerText = "السؤال " + (current+1) + " من 10";
-            document.getElementById('q-text').innerText = q.q;
-            const o = document.getElementById('opts'); o.innerHTML = '';
-            
-            let answered = false;
-            q.a.forEach((opt, i) => {
-                const b = document.createElement('button');
-                b.className = 'option';
-                b.innerText = opt;
-                b.onclick = () => { 
-                    if(answered) return;
-                    answered = true;
-                    if(i===q.c) score++; 
-                    current++; 
-                    if(current<10) setTimeout(load, 200); else setTimeout(end, 200); 
-                };
-                o.appendChild(b);
-            });
-        }
-
-        function end() {
-            clearInterval(timer);
-            show('finish');
-            document.getElementById('score').innerText = score;
-            saveScore();
-        }
-
-        async function saveScore() {
-            const f = new URLSearchParams();
-            f.append('mobile', user.mobile);
-            f.append('score', score);
-            
-            try {
-               await fetch(SCRIPT_URL, { 
-                   method: 'POST', 
-                   body: f,
-                   mode: 'no-cors' // حل مشكلة CORS عند الإرسال من جيت هاب لجوجل
-               });
-               document.getElementById('status').innerText = "✅ تم حفظ نتيجتك في قاعدة البيانات بنجاح.";
-               document.getElementById('status').style.color = "var(--accent)";
-            } catch(e) {
-               document.getElementById('status').innerText = "⚠️ حدث خطأ أثناء الحفظ. يرجى تصوير الشاشة وإرسالها للمدرب.";
-               document.getElementById('status').style.color = "red";
-            }
-        }
-
-        function show(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-    </script>
-</body>
-</html>
+                    document.getElementById('
