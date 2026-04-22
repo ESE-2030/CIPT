@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحدي كبسولة CIPT - المحاضرة الثانية</title>
+    <title>تحدي كبسولة CIPT - المحاضرة الثالثة</title>
     <style>
         :root { --primary: #1a2b4c; --accent: #27ae60; --bg: #f0f4f8; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
@@ -45,14 +45,14 @@
 
     <div class="card">
         <div class="header">
-            <h3 style="margin: 0;">تحدي كبسولة المحاضرة الثانية</h3>
+            <h3 style="margin: 0;">تحدي كبسولة المحاضرة الثالثة</h3>
             <div id="timer" class="timer" style="display:none">10:00</div>
         </div>
 
         <div class="screen active" id="login">
             <h3 style="text-align:center">تحقق من بيانات التسجيل</h3>
             <p style="text-align:center; color: #64748b; font-size: 14px;">أدخل رقم الواتساب المسجل في الحضور لتفعيل الاختبار</p>
-            <input type="tel" id="mob" placeholder="مثال: 01128007078" maxlength="11">
+            <input type="tel" id="mob" placeholder="مثال: 01142751397" maxlength="11">
             <button class="btn" onclick="check()" id="checkBtn">تحقق من البيانات</button>
             <p id="msg" style="color:red; text-align:center; font-weight:bold; margin-top:10px;"></p>
         </div>
@@ -62,7 +62,7 @@
                 <p>الاسم: <strong id="trainee-name" style="color: var(--primary);"></strong></p>
                 <p>كود المتدرب: <strong id="trainee-code" style="color: var(--primary);"></strong></p>
             </div>
-            <p style="line-height:1.6">لديك <strong>10 أسئلة</strong> عن "تعليم الكبار وهرم إدجار ديل". الوقت المتاح: <strong>10 دقائق</strong>.</p>
+            <p style="line-height:1.6">لديك <strong>10 أسئلة</strong> عن "نظريات التعلم وقاعدة مهربيان". الوقت المتاح: <strong>10 دقائق</strong>.</p>
             <button class="btn" onclick="start()">ابدأ التحدي الآن</button>
         </div>
 
@@ -89,23 +89,23 @@
     </p>
 
     <script>
-        // الرابط الخاص بك
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyAoDwzddNmVV0RXIUfjp-imEfYU8w9kNNv9ByRQaqQlL1kKpfrFqY4PRFTr0cCLeqs/exec';
+        // الرابط الجديد الخاص بك للمحاضرة الثالثة
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzuZU5VFtJ8pn3fJgOc5yECQyYqwDPoKsiIXpChZ1yC71Aq25KT9uPdIIaXJ2ZxMZ2j/exec';
         
         let current = 0, score = 0, timer, sec = 600, user = {};
-        let userAnswers = []; // مصفوفة لتخزين إجابات المتدرب للمراجعة
+        let userAnswers = []; 
 
         const questions = [
-            { q: "حسب هرم ديل، نسبة الاستيعاب عند 'الممارسة الفعلية' هي:", a: ["50%", "70%", "90%"], c: 2 },
-            { q: "يركز تعليم الكبار (Andragogy) بشكل أساسي على:", a: ["التلقين", "حل المشكلات", "الحفظ"], c: 1 },
-            { q: "من هو مؤسس نظرية تعليم الكبار؟", a: ["مالكولم نولز", "إدجار ديل", "بافلوف"], c: 0 },
-            { q: "نسبة تذكر المعلومات عند 'القراءة' فقط تبلغ:", a: ["10%", "20%", "30%"], c: 0 },
-            { q: "خبرة المتدرب البالغ تعتبر في العملية التدريبية:", a: ["عائقاً", "مورداً أساسياً", "ثانوية"], c: 1 },
-            { q: "قاعدة 70-20-10 تشير إلى أن 70% من التعلم يأتي من:", a: ["الدورات", "الخبرة والممارسة", "القراءة"], c: 1 },
-            { q: "في هرم ديل، 'مشاهدة فيديو' تحقق نسبة استيعاب:", a: ["30%", "50%", "70%"], c: 1 },
-            { q: "يحتاج الشخص البالغ لمعرفة ___ قبل بدء التعلم:", a: ["لماذا يتعلم هذا", "مكان القاعة", "اسم المدرب"], c: 0 },
-            { q: "الدافع للتعلم عند الكبار يكون في الغالب:", a: ["داخلياً", "خارجياً فقط", "إجبارياً"], c: 0 },
-            { q: "أي مستوى يحقق 70% استيعاب حسب هرم ديل؟", a: ["السمع", "المشاركة والنقاش", "القراءة"], c: 1 }
+            { q: "تنص قاعدة ألبرت مهربيان للتواصل على أن تأثير 'لغة الجسد' يمثل نسبة:", a: ["7%", "38%", "55%"], c: 2 },
+            { q: "أي من المدارس التالية تعتبر أن التعلم يحدث نتيجة 'مثير واستجابة'؟", a: ["المدرسة المعرفية", "المدرسة السلوكية", "المدرسة البنائية"], c: 1 },
+            { q: "العالم 'ديفيد كولب' هو مؤسس نظرية:", a: ["التعلم التجريبي", "التعلم البنائي", "التعلم السلوكي"], c: 0 },
+            { q: "في قاعدة مهربيان، النسبة المخصصة لـ 'نبرة الصوت' هي:", a: ["7%", "38%", "55%"], c: 1 },
+            { q: "المدرسة التي تشبه عقل الإنسان بـ 'الكمبيوتر' في معالجة وتخزين المعلومات هي:", a: ["المدرسة المعرفية", "المدرسة السلوكية", "المدرسة البنائية"], c: 0 },
+            { q: "دور المدرب في 'المدرسة البنائية' يتحول بشكل أساسي إلى:", a: ["ملقن للمعلومات", "ميسّر (Facilitator) للتعلم", "مراقب فقط"], c: 1 },
+            { q: "إذا حدث تناقض بين كلام المدرب ولغة جسده، فإن المتدربين يصدقون:", a: ["الكلمات فقط", "لغة الجسد ونبرة الصوت", "لا يصدقون شيئاً"], c: 1 },
+            { q: "استخدام 'العصف الذهني والعمل الجماعي والمشاريع' هو تطبيق لنظرية:", a: ["التعلم البنائي", "التعلم السلوكي", "التعلم الشرطي"], c: 0 },
+            { q: "النسبة المخصصة لـ 'الكلمات اللفظية والمحتوى' في قاعدة مهربيان هي:", a: ["7%", "38%", "55%"], c: 0 },
+            { q: "نظرية التعلم التي تعتمد على مبدأ 'الثواب والعقاب والتعزيز' هي:", a: ["المدرسة السلوكية", "التعلم التجريبي", "المدرسة المعرفية"], c: 0 }
         ];
 
         async function check() {
@@ -156,10 +156,9 @@
                 b.innerText = opt;
                 
                 b.onclick = () => { 
-                    if(answered) return; // منع الضغط أكثر من مرة
+                    if(answered) return; 
                     answered = true;
                     
-                    // حفظ الإجابة للمراجعة النهائية
                     userAnswers.push({
                         question: q.q,
                         selectedAnswer: opt,
@@ -167,19 +166,16 @@
                         isCorrect: i === q.c
                     });
 
-                    // إضافة المؤشرات البصرية الفورية
                     if(i === q.c) {
                         b.classList.add('correct');
                         score++; 
                     } else {
                         b.classList.add('wrong');
-                        // إضاءة الإجابة الصحيحة باللون الأخضر حتى لو أخطأ
                         o.children[q.c].classList.add('correct');
                     }
 
                     current++; 
                     
-                    // الانتظار ثانية ونصف لرؤية النتيجة قبل الانتقال للسؤال التالي
                     setTimeout(() => {
                         if(current < 10) load(); else end(); 
                     }, 1500);
@@ -193,7 +189,6 @@
             show('finish');
             document.getElementById('score').innerText = score + " / 10";
             
-            // إنشاء قسم المراجعة (إظهار الأخطاء)
             let reviewHTML = "";
             let wrongAnswers = userAnswers.filter(ans => !ans.isCorrect);
             
@@ -212,7 +207,6 @@
             }
             document.getElementById('review-section').innerHTML = reviewHTML;
 
-            // حفظ النتيجة في جوجل شيت
             const f = new URLSearchParams();
             f.append('mobile', user.mobile);
             f.append('score', score);
