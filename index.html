@@ -46,7 +46,7 @@
     <div class="card">
         <div class="header">
             <h3 style="margin: 0;">الاختبار النهائي الشامل</h3>
-            <div id="timer" class="timer" style="display:none">20:00</div>
+            <div id="timer" class="timer" style="display:none">15:00</div>
         </div>
 
         <div class="screen active" id="login">
@@ -62,7 +62,7 @@
                 <p>الاسم: <strong id="trainee-name" style="color: var(--primary);"></strong></p>
                 <p>كود المتدرب: <strong id="trainee-code" style="color: var(--primary);"></strong></p>
             </div>
-            <p style="line-height:1.6">لديك <strong>20 سؤالاً</strong> تدريبياً شاملاً. الوقت المتاح: <strong>20 دقيقة</strong>.</p>
+            <p style="line-height:1.6">لديك <strong>20 سؤالاً</strong> تدريبياً شاملاً. الوقت المتاح: <strong>15 دقيقة</strong>.</p>
             <button class="btn" onclick="start()">ابدأ التحدي الآن</button>
         </div>
 
@@ -92,7 +92,7 @@
         // الرابط الجديد الخاص بك للمحاضرة الثالثة
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzp1qe45e2_BRC0qRh9EYpz4BbInZOwveRjkl8EEPpqYT9U2AtKpqaQ4qEZGV953nVE/exec';
         
-        let current = 0, score = 0, timer, sec = 1200, user = {};
+        let current = 0, score = 0, timer, sec = 900, user = {};
         let userAnswers = []; 
 
         const questions = [
