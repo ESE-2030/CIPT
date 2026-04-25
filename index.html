@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحدي كبسولة CIPT - المحاضرة الثالثة</title>
+    <title>الاختبار النهائي - تحدي كبسولة CIPT</title>
     <style>
         :root { --primary: #1a2b4c; --accent: #27ae60; --bg: #f0f4f8; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
@@ -45,14 +45,14 @@
 
     <div class="card">
         <div class="header">
-            <h3 style="margin: 0;">تحدي كبسولة المحاضرة الثالثة</h3>
-            <div id="timer" class="timer" style="display:none">10:00</div>
+            <h3 style="margin: 0;">الاختبار النهائي الشامل</h3>
+            <div id="timer" class="timer" style="display:none">20:00</div>
         </div>
 
         <div class="screen active" id="login">
             <h3 style="text-align:center">تحقق من بيانات التسجيل</h3>
             <p style="text-align:center; color: #64748b; font-size: 14px;">أدخل رقم الواتساب المسجل في الحضور لتفعيل الاختبار</p>
-            <input type="tel" id="mob" placeholder="مثال: 01128007078" maxlength="11">
+            <input type="tel" id="mob" placeholder="مثال: 01142751397" maxlength="11">
             <button class="btn" onclick="check()" id="checkBtn">تحقق من البيانات</button>
             <p id="msg" style="color:red; text-align:center; font-weight:bold; margin-top:10px;"></p>
         </div>
@@ -62,7 +62,7 @@
                 <p>الاسم: <strong id="trainee-name" style="color: var(--primary);"></strong></p>
                 <p>كود المتدرب: <strong id="trainee-code" style="color: var(--primary);"></strong></p>
             </div>
-            <p style="line-height:1.6">لديك <strong>10 أسئلة</strong> عن "نظريات التعلم وقاعدة مهربيان". الوقت المتاح: <strong>10 دقائق</strong>.</p>
+            <p style="line-height:1.6">لديك <strong>20 سؤالاً</strong> تدريبياً شاملاً. الوقت المتاح: <strong>20 دقيقة</strong>.</p>
             <button class="btn" onclick="start()">ابدأ التحدي الآن</button>
         </div>
 
@@ -76,7 +76,7 @@
             <h2 style="text-align:center; color: var(--primary);">انتهى التحدي! 🎉</h2>
             <div style="background: #f8fafc; border: 2px dashed #cbd5e1; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;">
                 <h1 id="score" style="color:var(--accent); font-size: 48px; margin: 0;"></h1>
-                <p style="margin: 5px 0; color: #64748b;">نقاط من أصل 10</p>
+                <p style="margin: 5px 0; color: #64748b;">نقاط من أصل 20</p>
             </div>
             <p id="status" style="text-align:center; color:#64748b; font-weight:bold; margin-bottom: 20px;">جاري حفظ النتيجة ووقت الإرسال...</p>
             
@@ -90,22 +90,32 @@
 
     <script>
         // الرابط الجديد الخاص بك للمحاضرة الثالثة
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbziVGc-C4wV3O_Wt4fM3ddvoHAkUSbMdIhjWVHKyaw4CkI50A9GTmCtjBSOaRVx3L3X/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzuZU5VFtJ8pn3fJgOc5yECQyYqwDPoKsiIXpChZ1yC71Aq25KT9uPdIIaXJ2ZxMZ2j/exec';
         
-        let current = 0, score = 0, timer, sec = 600, user = {};
+        let current = 0, score = 0, timer, sec = 1200, user = {};
         let userAnswers = []; 
 
         const questions = [
+            { q: "ما هي القاعدة الذهبية في تقسيم وقت التدريب الاحترافي؟", a: ["70% عملي و 30% نظري", "50% عملي و 50% نظري", "30% عملي و 70% نظري"], c: 0 },
+            { q: "يقاس النجاح في جوهر التدريب بـ:", a: ["كثرة المعلومات المقدمة", "التغيير الحقيقي في العقلية والسلوك", "قدرة المدرب على الإبهار المستمر"], c: 1 },
+            { q: "يركز نموذج ASK في العملية التدريبية على تغيير:", a: ["المعارف والمهارات والسلوكيات", "الأفكار والمعلومات فقط", "الحالة البدنية للمتدربين"], c: 0 },
+            { q: "حسب نظرية تعليم الكبار (Andragogy)، يعتبر المدرب:", a: ["ملقناً للمعلومات", "موجهاً وميسراً", "مراقباً وسلطة عليا"], c: 1 },
+            { q: "حسب هرم التعلم لإدغار ديل، ما هي نسبة التذكر من 'الممارسة العملية'؟", a: ["50%", "70%", "90%"], c: 2 },
+            { q: "في مستويات الأداء الشخصي، ما هو المستوى الذي يعبر عن التميز؟", a: ["الإتقان", "الدقة", "الكفاية"], c: 2 },
+            { q: "يهدف 'تحليل الاحتياجات التدريبية' (TNA) بشكل أساسي إلى:", a: ["زيادة أرباح المؤسسة", "سد الفجوة بين الوضع الحالي والمأمول", "تقييم أداء المدرب"], c: 1 },
             { q: "تنص قاعدة ألبرت مهربيان للتواصل على أن تأثير 'لغة الجسد' يمثل نسبة:", a: ["7%", "38%", "55%"], c: 2 },
+            { q: "النسبة المخصصة لـ 'نبرة الصوت' في قاعدة مهربيان هي:", a: ["7%", "38%", "55%"], c: 1 },
             { q: "أي من المدارس التالية تعتبر أن التعلم يحدث نتيجة 'مثير واستجابة'؟", a: ["المدرسة المعرفية", "المدرسة السلوكية", "المدرسة البنائية"], c: 1 },
-            { q: "العالم 'ديفيد كولب' هو مؤسس نظرية:", a: ["التعلم التجريبي", "التعلم البنائي", "التعلم السلوكي"], c: 0 },
-            { q: "في قاعدة مهربيان، النسبة المخصصة لـ 'نبرة الصوت' هي:", a: ["7%", "38%", "55%"], c: 1 },
-            { q: "المدرسة التي تشبه عقل الإنسان بـ 'الكمبيوتر' في معالجة وتخزين المعلومات هي:", a: ["المدرسة المعرفية", "المدرسة السلوكية", "المدرسة البنائية"], c: 0 },
-            { q: "دور المدرب في 'المدرسة البنائية' يتحول بشكل أساسي إلى:", a: ["ملقن للمعلومات", "ميسّر (Facilitator) للتعلم", "مراقب فقط"], c: 1 },
-            { q: "إذا حدث تناقض بين كلام المدرب ولغة جسده، فإن المتدربين يصدقون:", a: ["الكلمات فقط", "لغة الجسد ونبرة الصوت", "لا يصدقون شيئاً"], c: 1 },
-            { q: "استخدام 'العصف الذهني والعمل الجماعي والمشاريع' هو تطبيق لنظرية:", a: ["التعلم البنائي", "التعلم السلوكي", "التعلم الشرطي"], c: 0 },
-            { q: "النسبة المخصصة لـ 'الكلمات اللفظية والمحتوى' في قاعدة مهربيان هي:", a: ["7%", "38%", "55%"], c: 0 },
-            { q: "نظرية التعلم التي تعتمد على مبدأ 'الثواب والعقاب والتعزيز' هي:", a: ["المدرسة السلوكية", "التعلم التجريبي", "المدرسة المعرفية"], c: 0 }
+            { q: "المدرسة التي تشبه عقل الإنسان بـ 'الكمبيوتر' في معالجة المعلومات هي:", a: ["المدرسة السلوكية", "المدرسة المعرفية", "المدرسة البنائية"], c: 1 },
+            { q: "من الوضعيات الإيجابية للغة الجسد التي تدل على الثقة في العرض:", a: ["تربيع اليدين", "الظهر مفرود واليدان مفتوحتان", "وضع اليد في الجيب"], c: 1 },
+            { q: "واحدة من 'الوقفات الست' (فن الصمت) تستخدم لـ:", a: ["لفت الانتباه قبل الكلام", "إخفاء التوتر", "زيادة وقت العرض"], c: 0 },
+            { q: "هيكل العرض التقديمي يتكون من ثلاثة أجزاء رئيسية هي:", a: ["المقدمة والموضوع والخاتمة", "التمهيد والمفاجأة والإغلاق", "كسر الجليد والصور والتلخيص"], c: 0 },
+            { q: "من الأخطاء القاتلة أثناء التحدث أمام الجمهور:", a: ["التبسيط", "الرتابة الصوتية وضعف التحضير", "أنسنة المواد"], c: 1 },
+            { q: "فلسفة 'حصان طروادة' في التحدث تعني:", a: ["الهجوم على آراء المتدربين", "الدخول الطوعي لوعي المتلقي واستخدام القصة", "إخفاء المعلومات عن الجمهور"], c: 1 },
+            { q: "من مكونات الحقيبة التدريبية الأساسية:", a: ["دليل المتدرب، دليل المدرب، دليل التطبيقات", "جهاز العرض المحمول", "السيرة الذاتية للمدرب فقط"], c: 0 },
+            { q: "من جاذبات الانتباه في تصميم المحتوى:", a: ["القصص الهادفة والأمثلة الواقعية", "الرتابة في العرض وتزاحم الشرائح", "تجنب طرح الأسئلة"], c: 0 },
+            { q: "حسب قاعدة 'الثوابت والمتغيرات' في تصميم المحتوى، تعتبر 'القيم والأخلاق':", a: ["متغيرة حسب الجمهور", "ثوابت قاطعة لا تتغير", "تحتاج لتحديث مستمر"], c: 1 },
+            { q: "من مزايا استخدام الذكاء الاصطناعي في التدريب:", a: ["توفير الوقت والجهد مع ضرورة التدقيق البشري", "الاستغناء التام عن التدقيق البشري والمراجعة", "إلغاء بصمة شخصية المدرب"], c: 0 }
         ];
 
         async function check() {
@@ -143,7 +153,7 @@
 
         function load() {
             const q = questions[current];
-            document.getElementById('progress').innerText = "السؤال " + (current+1) + " من 10";
+            document.getElementById('progress').innerText = "السؤال " + (current+1) + " من 20";
             document.getElementById('q-text').innerText = q.q;
             const o = document.getElementById('opts'); 
             o.innerHTML = '';
@@ -177,7 +187,7 @@
                     current++; 
                     
                     setTimeout(() => {
-                        if(current < 10) load(); else end(); 
+                        if(current < 20) load(); else end(); 
                     }, 1500);
                 };
                 o.appendChild(b);
@@ -187,7 +197,7 @@
         function end() {
             clearInterval(timer);
             show('finish');
-            document.getElementById('score').innerText = score + " / 10";
+            document.getElementById('score').innerText = score + " / 20";
             
             let reviewHTML = "";
             let wrongAnswers = userAnswers.filter(ans => !ans.isCorrect);
